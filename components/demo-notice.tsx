@@ -1,0 +1,2 @@
+import { Info } from "lucide-react";
+export default function DemoNotice(){return <div className="flex items-start gap-2 rounded-xl border border-[#4d4439] bg-[#2a241f] px-4 py-3 text-xs leading-5 text-[#dfc9a9]"><Info className="mt-0.5 shrink-0" size={15}/><span>Demo dataset: model information, pricing, provider availability and benchmark scores are illustrative test values, not live or independently verified. Check official sources before making decisions.</span></div>}

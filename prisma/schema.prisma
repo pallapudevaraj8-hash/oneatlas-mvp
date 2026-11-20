@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lab {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  initials    String
+  description String
+  website     String?
+  models      Model[]
+}
+
+model Provider {
+  id          String              @id @default(cuid())
+  slug        String              @unique
+  name        String
+  initials    String
+  description String
+  website     String?
+  offerings   ModelAvailability[]
+}
+
+model Model {
+  id             String              @id @default(cuid())
+  slug           String              @unique
+  name           String
+  description    String
+  type           String
+  contextWindow  Int
+  maxOutput      Int
+  openWeights    Boolean             @default(false)
+  modalities     String[]
+  capabilities   String[]
+  releasedAt     DateTime
+  labId          String
+  lab            Lab                 @relation(fields: [labId], references: [id])
+  offerings      ModelAvailability[]
+  benchmarks     Benchmark[]
+  @@index([labId])
+  @@index([type])
+  @@index([releasedAt])
+}
+
+model ModelAvailability {
+  id             String   @id @default(cuid())
+  modelId        String
+  providerId     String
+  inputPrice     Float
+  outputPrice    Float
+  model          Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  provider       Provider @relation(fields: [providerId], references: [id])
+  @@unique([modelId, providerId])
+  @@index([providerId])
+}
+
+model Benchmark {
+  id        String   @id @default(cuid())
+  modelId   String
+  category  String
+  score     Float
+  model     Model    @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  @@unique([modelId, category])
+  @@index([category, score])
+}
